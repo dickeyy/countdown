@@ -1,1 +1,3 @@
-# Math exam countdown...
+# Countdown
+
+A simple little event countdown timer.
