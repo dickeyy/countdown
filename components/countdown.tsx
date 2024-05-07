@@ -108,10 +108,10 @@ export default function Countdown() {
                             <div className="grid flex-1 gap-2">
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                        <Button
-                                            variant={"outline"}
+                                        <button
+                                            // variant={"outline"}
                                             className={cn(
-                                                "justify-start text-left font-normal",
+                                                "flex flex-row items-center justify-start rounded-md border px-3 py-[0.5rem] text-left text-sm font-normal",
                                                 !inputDate && "text-muted-foreground"
                                             )}
                                         >
@@ -121,7 +121,7 @@ export default function Countdown() {
                                             ) : (
                                                 <span>Pick a date</span>
                                             )}
-                                        </Button>
+                                        </button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto p-0" align="start">
                                         <Calendar
@@ -129,6 +129,7 @@ export default function Countdown() {
                                             selected={inputDate}
                                             onSelect={setInputDate}
                                             initialFocus
+                                            today={new Date()}
                                         />
                                     </PopoverContent>
                                 </Popover>
