@@ -4,30 +4,30 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 
 const fontSans = FontSans({
-	subsets: ["latin"],
-	variable: "--font-sans",
+    subsets: ["latin"],
+    variable: "--font-sans"
 });
 
 export const metadata: Metadata = {
-	title: "Exam Countdown",
-	description: "Time until hell.",
+    title: "Countdown",
+    description: "A simple little countdown app."
 };
 
 export default function RootLayout({
-	children,
+    children
 }: Readonly<{
-	children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-	return (
-		<html lang="en">
-			<body
-				className={cn(
-					"min-h-screen bg-background font-sans antialiased",
-					fontSans.variable
-				)}
-			>
-				{children}
-			</body>
-		</html>
-	);
+    return (
+        <html lang="en">
+            <body
+                className={cn(
+                    "min-h-screen bg-background font-sans antialiased",
+                    fontSans.variable
+                )}
+            >
+                {children}
+            </body>
+        </html>
+    );
 }
