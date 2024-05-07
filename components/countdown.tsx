@@ -23,8 +23,9 @@ export default function Countdown() {
     const [inputDate, setInputDate] = useState<Date>();
     const [inputTime, setInputTime] = useState<string>();
     const [timezone, setTimezone] = useState<string>("-06:00"); // ["-07:00", "-08:00", "-09:00" etc]
-    const [label, setLabel] = useState<string>("exam"); // ["PST", "MST", "CST" etc
-    const [timeOfEvent, setTimeOfEvent] = useState<any>(new Date("2024-05-07T07:30:00-0600"));
+    const [label, setLabel] = useState<string>("event"); // ["PST", "MST", "CST" etc
+    const [timeOfEvent, setTimeOfEvent] = useState<any>(new Date());
+    const [timerActive, setTimerActive] = useState<boolean>(false); // [true, false]
     const [timeTill, setTimeTill] = useState(["00", "00", "00", "00", "00"]);
 
     // automatically get the users timezone
@@ -38,33 +39,52 @@ export default function Countdown() {
     }, []);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            // calculate the exact time until the event {days, hours, minutes, seconds} add leading zeros
-            const timeLeft: any = Number(timeOfEvent) - Number(new Date());
-            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-            // get the 2 digit milliseconds
-            const milliseconds = Math.floor((timeLeft % 1000) / 10);
-            setTimeTill([
-                days.toString().padStart(2, "0"),
-                hours.toString().padStart(2, "0"),
-                minutes.toString().padStart(2, "0"),
-                seconds.toString().padStart(2, "0"),
-                milliseconds.toString().padStart(2, "0")
-            ]);
-        }, 1);
-        return () => clearInterval(interval);
+        if (timerActive) {
+            const interval = setInterval(() => {
+                // calculate the exact time until the event {days, hours, minutes, seconds} add leading zeros
+                const timeLeft: any = Number(timeOfEvent) - Number(new Date());
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                // get the 2 digit milliseconds
+                const milliseconds = Math.floor((timeLeft % 1000) / 10);
+
+                // if any of the values are less than 0, clear the interval and set the time to 00:00:00:00
+                if (timeLeft < 0) {
+                    clearInterval(interval);
+                    setTimeTill(["00", "00", "00", "00", "00"]);
+                    setTimerActive(false);
+                    return;
+                }
+
+                setTimeTill([
+                    days.toString().padStart(2, "0"),
+                    hours.toString().padStart(2, "0"),
+                    minutes.toString().padStart(2, "0"),
+                    seconds.toString().padStart(2, "0"),
+                    milliseconds.toString().padStart(2, "0")
+                ]);
+            }, 10);
+            return () => clearInterval(interval);
+        }
     });
 
     return (
-        <div className="flex flex-col items-center justify-between">
+        <div className="flex flex-col items-center justify-between text-center">
             <div className="flex flex-col items-center justify-center">
                 <p className="mb-4 text-lg text-foreground/40">Time until {label}:</p>
-                <p className="font-mono text-3xl font-normal text-foreground sm:text-6xl">
+                <p
+                    className={`font-mono text-3xl font-normal sm:text-6xl
+                    ${timerActive && timeTill[1] === "00" && timeTill[0] === "00" ? "animate-pulse text-red-500" : "text-foreground"}
+                `}
+                >
                     {timeTill[0]}:{timeTill[1]}:{timeTill[2]}:{timeTill[3]}
                     <span className="text-[2rem] text-foreground/60">:{timeTill[4]}</span>
+                </p>
+
+                <p className="mt-4 text-lg text-foreground/80">
+                    {timerActive ? "" : "Countdown is paused, click edit to start."}
                 </p>
             </div>
             <div className="absolute bottom-4">
@@ -140,7 +160,7 @@ export default function Countdown() {
                                                 `${inputDate?.toISOString().split("T")[0]}T${inputTime}:00${timezone ?? "-0600"}`
                                             )
                                         );
-                                        console.log("Time of event set to:", timeOfEvent);
+                                        setTimerActive(true);
                                     }}
                                 >
                                     Save
