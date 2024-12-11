@@ -21,7 +21,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
-                <script defer data-domain="countdown.kyle.so" src="https://analytics.kyle.so/js/script.js"></script>
+                <script defer data-domain="countdown.kyle.so" src="https://a.kyle.so/js/script.js"></script>
             </head>
             <body
                 className={cn(
